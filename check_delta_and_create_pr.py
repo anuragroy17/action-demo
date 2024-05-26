@@ -70,8 +70,6 @@ def main():
                         diff = check_differences(extracted_file_path, repo_file_path)
                         if diff:
                             files_with_differences.append((extracted_file_path, repo_file_path))
-                        else:
-                            print(f"No differences found between '{extracted_file_path}' and '{repo_file_path}'")
                     else:
                         new_files.append((extracted_file_path, repo_file_path))
                 else:
@@ -122,7 +120,7 @@ def main():
             pr_body = 'This PR updates the files with differences and adds new files from the downloaded ZIP file.'
             create_pull_request(github_token, repo_name, base_branch, head_branch, pr_title, pr_body)
     else:
-        print("No differences found in files.")
+        print("No differences found in files, so, no PR raised.")
 
 if __name__ == "__main__":
     main()
