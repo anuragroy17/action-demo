@@ -1,8 +1,12 @@
 ## Setting Up Secrets
 In your GitHub repository, go to Settings > Secrets and variables > Actions and add the following secrets:
 
-**FILE_URL:** The URL from where the ZIP file should be downloaded.
-**GITHUB_TOKEN:** A GitHub token with permissions to create branches and pull requests.
+- **FILE_URL**: The URL from where the ZIP file should be downloaded.
+- **GITHUB_TOKEN**: A GitHub token with permissions to create branches and pull requests.
+
+and variables:
+- **REPO_DIR**: The directory in the repo where the file needs to be merged
+- **REPO_NAME**: Name of the repo where this script needs to be executed
 
 ## Explanation
 
