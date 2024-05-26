@@ -40,5 +40,5 @@ jobs:
     # Cleanup step to remove temporary files or directories
     - name: Cleanup
       run: |
-        rm -rf downloaded_file.zip
+        rm -rf download.zip
         rm -rf extracted_files
