@@ -77,7 +77,7 @@ def main():
     # Step 4: Raise a PR if there are differences or new files
     if files_with_differences or new_files:
         # Pull changes from remote repository
-        subprocess.run(['git', 'pull', 'origin', head_branch])
+        subprocess.run(['git', 'pull', '--rebase', 'origin', head_branch])  # Use rebase to reconcile divergent branches
         
         # Create a new branch
         subprocess.run(['git', 'checkout', '-b', head_branch])
@@ -99,7 +99,7 @@ def main():
         subprocess.run(['git', 'commit', '-m', 'Update files with differences and add new files'])
         
         # Pull latest changes again to ensure no conflicts
-        subprocess.run(['git', 'pull', 'origin', head_branch])
+        subprocess.run(['git', 'pull', '--rebase', 'origin', head_branch])  # Use rebase to reconcile divergent branches
         
         # Push changes to remote repository
         subprocess.run(['git', 'push', 'origin', head_branch])
