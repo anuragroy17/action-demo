@@ -47,7 +47,7 @@ def main():
     head_branch = os.getenv('HEAD_BRANCH', 'update-branch')
     
     # Step 1: Download the ZIP file
-    downloaded_zip = download_file(url, 'downloaded_file.zip')
+    downloaded_zip = download_file(url, 'download.zip')
     
     # Step 2: Unzip the file
     extracted_dir = 'extracted_files'
