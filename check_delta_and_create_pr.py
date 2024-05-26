@@ -41,7 +41,7 @@ def main():
     url = os.getenv('FILE_URL')
     repo_dir = os.getenv('REPO_DIR')
     target_dir = os.getenv('TARGET_DIR')
-    github_token = os.getenv('GITHUB_TOKEN')  # Read personal access token from environment variable
+    github_token = os.getenv('GITHUB_TOKEN')
     repo_name = os.getenv('REPO_NAME')
     base_branch = os.getenv('BASE_BRANCH', 'main')
     head_branch = os.getenv('HEAD_BRANCH', 'update-branch')
@@ -76,14 +76,9 @@ def main():
     
     # Step 4: Raise a PR if there are differences or new files
     if files_with_differences or new_files:
-        # Pull changes from remote repository
-        subprocess.run(['git', 'pull', '--rebase', 'origin', base_branch])  # Use rebase to reconcile divergent branches
-        
-        # Check if head_branch exists
-        branches = subprocess.run(['git', 'branch', '--list', head_branch], capture_output=True, text=True)
-        
-        if head_branch in branches.stdout:  # Head branch exists, delete it
-            subprocess.run(['git', 'branch', '-D', head_branch])
+    
+        # Delete head_branch if it exists
+        subprocess.run(['git', 'branch', '-D', head_branch])
         
         # Create the new branch from base_branch
         subprocess.run(['git', 'checkout', '-b', head_branch, base_branch])
@@ -103,9 +98,6 @@ def main():
         # Commit the changes
         subprocess.run(['git', 'add', target_dir_path])  # Add only files within target_dir
         subprocess.run(['git', 'commit', '-m', 'Update files with differences and add new files'])
-        
-        # Pull latest changes again to ensure no conflicts
-        subprocess.run(['git', 'pull', '--rebase', 'origin', head_branch])  # Use rebase to reconcile divergent branches
         
         # Push changes to remote repository
         subprocess.run(['git', 'push', 'origin', head_branch])
