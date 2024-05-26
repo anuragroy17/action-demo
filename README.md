@@ -20,3 +20,5 @@ In your GitHub repository, go to Settings > Secrets and variables > Actions and 
 - Uses secrets to securely pass sensitive information to the script.
 
 This setup ensures that only files with matching names are compared, and new files are added directly, with a pull request being created if necessary.
+
+**Note:** Check if "Read and write permissions" are enabled in Settings -> Actions -> General -> Workflow permissions

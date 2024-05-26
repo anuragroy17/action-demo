@@ -12,6 +12,11 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v2
+      
+    - name: Set username and email for Git
+      run: |
+        git config --global user.name "updateBot17"
+        git config --global user.email "updateBot17@example.com"
 
     - name: Set up Python
       uses: actions/setup-python@v2
