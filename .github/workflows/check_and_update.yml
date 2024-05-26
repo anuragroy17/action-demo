@@ -22,11 +22,6 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install requests PyGithub
-        
-        
-    - name: List contents of workspace directory
-      run: ls -al ${{ github.workspace }}
-
 
     - name: Run the check and update script
       env:
@@ -35,4 +30,4 @@ jobs:
         TARGET_DIR: 'test_dir'  # Replace with the directory you want to check within the repository
         GITHUB_TOKEN: ${{ secrets.ACTION_TOKEN }}
         REPO_NAME: ${{ github.repository }}
-      run: python scripts/check_delta_and_create_pr.py
+      run: python check_delta_and_create_pr.py
