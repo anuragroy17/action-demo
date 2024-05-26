@@ -77,10 +77,16 @@ def main():
     # Step 4: Raise a PR if there are differences or new files
     if files_with_differences or new_files:
         # Pull changes from remote repository
-        subprocess.run(['git', 'pull', '--rebase', 'origin', head_branch])  # Use rebase to reconcile divergent branches
+        subprocess.run(['git', 'pull', '--rebase', 'origin', base_branch])  # Use rebase to reconcile divergent branches
         
-        # Create a new branch
-        subprocess.run(['git', 'checkout', '-b', head_branch])
+        # Check if head_branch exists
+        branches = subprocess.run(['git', 'branch', '--list', head_branch], capture_output=True, text=True)
+        
+        if head_branch in branches.stdout:  # Head branch exists, rebase it
+            subprocess.run(['git', 'checkout', head_branch])
+            subprocess.run(['git', 'rebase', base_branch])
+        else:  # Head branch doesn't exist, create it from base_branch
+            subprocess.run(['git', 'checkout', '-b', head_branch, base_branch])
         
         # Create the target directory if it doesn't exist
         if target_dir:
