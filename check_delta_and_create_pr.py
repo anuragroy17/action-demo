@@ -34,17 +34,9 @@ def check_differences(file1, file2):
 def create_pull_request(token, repo_name, base_branch, head_branch, title, body):
     g = Github(token)
     repo = g.get_repo(repo_name)
-    
-    # Check if a PR already exists for the head_branch and base_branch
-    existing_prs = repo.get_pulls(head=head_branch, state='open')
-    for pr in existing_prs:
-        if pr.base.ref == base_branch:
-            raise ValueError(f"A pull request already exists for the branch '{head_branch}'")
-    
-    # If no existing PR, create a new one
     pr = repo.create_pull(title=title, body=body, base=base_branch, head=head_branch)
     print(f"Pull Request created: {pr.html_url}")
-
+    
 
 def main():
     url = os.getenv('FILE_URL')
@@ -87,36 +79,46 @@ def main():
     if files_with_differences or new_files:
         # Pull changes from remote repository
         subprocess.run(['git', 'pull', 'origin', base_branch])
-        
-        # Delete head_branch if it exists
-        subprocess.run(['git', 'branch', '-D', head_branch])
-        
-        # Create the new branch from base_branch
-        subprocess.run(['git', 'checkout', '-b', head_branch, base_branch])
-        
-        # Create the target directory if it doesn't exist
-        if target_dir:
-            target_dir_path = os.path.join(repo_dir, target_dir)
-            os.makedirs(target_dir_path, exist_ok=True)
+
+        # Check if a PR already exists for the head_branch
+        g = Github(github_token)
+        repo = g.get_repo(repo_name)
+        existing_prs = repo.get_pulls(head=head_branch, state='open')
+        existing_pr_exists = any(pr.base.ref == base_branch for pr in existing_prs)
+
+        # If a PR already exists, raise an error
+        if existing_pr_exists:
+            raise ValueError(f"A pull request already exists for the branch '{head_branch}'")
         else:
-            target_dir_path = repo_dir
-        
-        # Copy the files with differences and new files to the target directory
-        for extracted_file_path, repo_file_path in files_with_differences + new_files:
-            os.makedirs(os.path.dirname(repo_file_path), exist_ok=True)
-            subprocess.run(['cp', extracted_file_path, repo_file_path])
-        
-        # Commit the changes
-        subprocess.run(['git', 'add', target_dir_path])  # Add only files within target_dir
-        subprocess.run(['git', 'commit', '-m', 'Update files with differences and add new files'])
-        
-        # Push changes to remote repository
-        subprocess.run(['git', 'push', 'origin', head_branch, '--force'])  # Use --force to overwrite remote branch
-        
-        # Create the pull request
-        pr_title = 'Update files with differences and add new files'
-        pr_body = 'This PR updates the files with differences and adds new files from the downloaded ZIP file.'
-        create_pull_request(github_token, repo_name, base_branch, head_branch, pr_title, pr_body)
+            # Delete head_branch if it exists
+            subprocess.run(['git', 'branch', '-D', head_branch])
+
+            # Create the new branch from base_branch
+            subprocess.run(['git', 'checkout', '-b', head_branch, base_branch])
+
+            # Create the target directory if it doesn't exist
+            if target_dir:
+                target_dir_path = os.path.join(repo_dir, target_dir)
+                os.makedirs(target_dir_path, exist_ok=True)
+            else:
+                target_dir_path = repo_dir
+
+            # Copy the files with differences and new files to the target directory
+            for extracted_file_path, repo_file_path in files_with_differences + new_files:
+                os.makedirs(os.path.dirname(repo_file_path), exist_ok=True)
+                subprocess.run(['cp', extracted_file_path, repo_file_path])
+
+            # Commit the changes
+            subprocess.run(['git', 'add', target_dir_path])  # Add only files within target_dir
+            subprocess.run(['git', 'commit', '-m', 'Update files with differences and add new files'])
+
+            # Push changes to remote repository
+            subprocess.run(['git', 'push', 'origin', head_branch, '--force'])  # Use --force to overwrite remote branch
+
+            # Create the pull request
+            pr_title = 'Update files with differences and add new files'
+            pr_body = 'This PR updates the files with differences and adds new files from the downloaded ZIP file.'
+            create_pull_request(github_token, repo_name, base_branch, head_branch, pr_title, pr_body)
 
 if __name__ == "__main__":
     main()
