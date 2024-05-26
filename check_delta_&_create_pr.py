@@ -40,6 +40,7 @@ def create_pull_request(token, repo_name, base_branch, head_branch, title, body)
 def main():
     url = os.getenv('FILE_URL')
     repo_dir = os.getenv('REPO_DIR')
+    target_dir = os.getenv('TARGET_DIR')
     github_token = os.getenv('GITHUB_TOKEN')
     repo_name = os.getenv('REPO_NAME')
     base_branch = os.getenv('BASE_BRANCH', 'main')
@@ -58,7 +59,7 @@ def main():
     for root, _, files in os.walk(extracted_dir):
         for file in files:
             extracted_file_path = os.path.join(root, file)
-            repo_file_path = os.path.join(repo_dir, os.path.relpath(extracted_file_path, extracted_dir))
+            repo_file_path = os.path.join(repo_dir, target_dir, os.path.relpath(extracted_file_path, extracted_dir))
             if os.path.exists(repo_file_path):
                 if os.path.basename(extracted_file_path) == os.path.basename(repo_file_path):
                     diff = check_differences(extracted_file_path, repo_file_path)

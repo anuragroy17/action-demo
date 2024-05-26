@@ -27,6 +27,7 @@ jobs:
       env:
         FILE_URL: ${{ secrets.FILE_URL }}
         REPO_DIR: ${{ github.workspace }}
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        TARGET_DIR: 'test_dir'  # Replace with the directory you want to check within the repository
+        GITHUB_TOKEN: ${{ secrets.ACTION_TOKEN }}
         REPO_NAME: ${{ github.repository }}
       run: python check_delta_and_create_pr.py
