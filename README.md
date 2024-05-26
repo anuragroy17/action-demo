@@ -2,7 +2,7 @@
 In your GitHub repository, go to Settings > Secrets and variables > Actions and add the following secrets:
 
 - **FILE_URL**: The URL from where the ZIP file should be downloaded.
-- **GITHUB_TOKEN**: A GitHub token with permissions to create branches and pull requests.
+- **GITHUB_TOKEN**: A GitHub token with permissions to create/delete branches and pull requests.
 
 ## Explanation
 
@@ -10,7 +10,7 @@ In your GitHub repository, go to Settings > Secrets and variables > Actions and 
 
 - Downloads a ZIP file from a specified URL. The filename is inferred from the Content-Disposition header if available.
 - Unzips the downloaded file.
-- Checks for differences only if the file names in the extracted directory and repository match.
+- Checks for differences only if the file names in the extracted directory and repository's target directory files match.
 - Adds new files directly if they do not exist in the repository or if the names do not match.
 - Raises a pull request if there are differences or new files.
 
