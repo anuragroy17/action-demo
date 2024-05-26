@@ -36,9 +36,3 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.ACTION_TOKEN }}
         REPO_NAME: ${{ github.repository }}
       run: python check_delta_and_create_pr.py
-      
-    # Cleanup step to remove temporary files or directories
-    - name: Cleanup
-      run: |
-        rm -rf download.zip
-        rm -rf extracted_files
