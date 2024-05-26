@@ -6,7 +6,7 @@ In your GitHub repository, go to Settings > Secrets and variables > Actions and 
 
 and variables:
 - **REPO_DIR**: The directory in the repo where the file needs to be merged
-- **REPO_NAME**: Name of the repo where this script needs to be executed
+- **REPO_NAME**: Name of the repo where the PR needs to be raised
 
 ## Explanation
 
