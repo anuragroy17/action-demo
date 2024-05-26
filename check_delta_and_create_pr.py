@@ -59,7 +59,10 @@ def main():
     for root, _, files in os.walk(extracted_dir):
         for file in files:
             extracted_file_path = os.path.join(root, file)
-            repo_file_path = os.path.join(repo_dir, target_dir, os.path.relpath(extracted_file_path, extracted_dir))
+            if target_dir:
+                repo_file_path = os.path.join(repo_dir, target_dir, os.path.relpath(extracted_file_path, extracted_dir))
+            else:
+                repo_file_path = os.path.join(repo_dir, os.path.relpath(extracted_file_path, extracted_dir))
             if repo_file_path.startswith(os.path.join(repo_dir, target_dir)):  # Ensure file is within target_dir
                 if os.path.exists(repo_file_path):
                     if os.path.basename(extracted_file_path) == os.path.basename(repo_file_path):
@@ -79,13 +82,20 @@ def main():
         # Create a new branch
         subprocess.run(['git', 'checkout', '-b', head_branch])
         
-        # Copy the files with differences and new files to the repo directory
+        # Create the target directory if it doesn't exist
+        if target_dir:
+            target_dir_path = os.path.join(repo_dir, target_dir)
+            os.makedirs(target_dir_path, exist_ok=True)
+        else:
+            target_dir_path = repo_dir
+        
+        # Copy the files with differences and new files to the target directory
         for extracted_file_path, repo_file_path in files_with_differences + new_files:
             os.makedirs(os.path.dirname(repo_file_path), exist_ok=True)
             subprocess.run(['cp', extracted_file_path, repo_file_path])
         
         # Commit the changes
-        subprocess.run(['git', 'add', os.path.join(repo_dir, target_dir)])  # Add only files within target_dir
+        subprocess.run(['git', 'add', target_dir_path])  # Add only files within target_dir
         subprocess.run(['git', 'commit', '-m', 'Update files with differences and add new files'])
         
         # Push changes to remote repository
