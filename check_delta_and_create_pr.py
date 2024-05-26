@@ -41,7 +41,7 @@ def main():
     url = os.getenv('FILE_URL')
     repo_dir = os.getenv('REPO_DIR')
     target_dir = os.getenv('TARGET_DIR')
-    github_token = os.getenv('GITHUB_TOKEN')
+    github_token = os.getenv('GITHUB_TOKEN')  # Read personal access token from environment variable
     repo_name = os.getenv('REPO_NAME')
     base_branch = os.getenv('BASE_BRANCH', 'main')
     head_branch = os.getenv('HEAD_BRANCH', 'update-branch')
@@ -82,11 +82,11 @@ def main():
         # Check if head_branch exists
         branches = subprocess.run(['git', 'branch', '--list', head_branch], capture_output=True, text=True)
         
-        if head_branch in branches.stdout:  # Head branch exists, rebase it
-            subprocess.run(['git', 'checkout', head_branch])
-            subprocess.run(['git', 'rebase', base_branch])
-        else:  # Head branch doesn't exist, create it from base_branch
-            subprocess.run(['git', 'checkout', '-b', head_branch, base_branch])
+        if head_branch in branches.stdout:  # Head branch exists, delete it
+            subprocess.run(['git', 'branch', '-D', head_branch])
+        
+        # Create the new branch from base_branch
+        subprocess.run(['git', 'checkout', '-b', head_branch, base_branch])
         
         # Create the target directory if it doesn't exist
         if target_dir:
