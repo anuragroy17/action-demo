@@ -77,7 +77,7 @@ def main():
     # Step 4: Raise a PR if there are differences or new files
     if files_with_differences or new_files:
         # Pull changes from remote repository
-        subprocess.run(['git', 'pull', 'origin', base_branch])
+        subprocess.run(['git', 'pull', 'origin', head_branch])
         
         # Create a new branch
         subprocess.run(['git', 'checkout', '-b', head_branch])
@@ -97,6 +97,9 @@ def main():
         # Commit the changes
         subprocess.run(['git', 'add', target_dir_path])  # Add only files within target_dir
         subprocess.run(['git', 'commit', '-m', 'Update files with differences and add new files'])
+        
+        # Pull latest changes again to ensure no conflicts
+        subprocess.run(['git', 'pull', 'origin', head_branch])
         
         # Push changes to remote repository
         subprocess.run(['git', 'push', 'origin', head_branch])
