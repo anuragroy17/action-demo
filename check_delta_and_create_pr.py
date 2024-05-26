@@ -102,7 +102,7 @@ def main():
         subprocess.run(['git', 'commit', '-m', 'Update files with differences and add new files'])
         
         # Push changes to remote repository
-        subprocess.run(['git', 'push', 'origin', head_branch])
+        subprocess.run(['git', 'push', 'origin', head_branch, '--force'])  # Use --force to overwrite remote branch
         
         # Create the pull request
         pr_title = 'Update files with differences and add new files'
