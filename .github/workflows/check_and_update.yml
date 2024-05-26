@@ -38,7 +38,7 @@ jobs:
       run: python check_delta_and_create_pr.py
       
 # Cleanup step to remove temporary files or directories
-      - name: Cleanup
-        run: |
-          rm -rf download.zip
-          rm -rf extracted_files
+    - name: Cleanup
+      run: |
+        rm -rf download.zip
+        rm -rf extracted_files
