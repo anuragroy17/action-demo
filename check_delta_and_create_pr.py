@@ -76,7 +76,9 @@ def main():
     
     # Step 4: Raise a PR if there are differences or new files
     if files_with_differences or new_files:
-    
+        # Pull changes from remote repository
+        subprocess.run(['git', 'pull', 'origin', base_branch])
+        
         # Delete head_branch if it exists
         subprocess.run(['git', 'branch', '-D', head_branch])
         
