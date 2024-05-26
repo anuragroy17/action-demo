@@ -90,7 +90,7 @@ def main():
 
         # If a PR already exists, raise an error
         if existing_pr_exists:
-            raise ValueError(f"A pull request already exists for the branch '{head_branch}'")
+            raise ValueError(f"A pull request already exists for the branch '{head_branch}', close it before re-running the job")
         else:
             # Delete head_branch if it exists
             subprocess.run(['git', 'branch', '-D', head_branch])
