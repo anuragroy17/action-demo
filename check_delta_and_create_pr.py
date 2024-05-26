@@ -34,8 +34,17 @@ def check_differences(file1, file2):
 def create_pull_request(token, repo_name, base_branch, head_branch, title, body):
     g = Github(token)
     repo = g.get_repo(repo_name)
+    
+    # Check if a PR already exists for the head_branch and base_branch
+    existing_prs = repo.get_pulls(head=head_branch, state='open')
+    for pr in existing_prs:
+        if pr.base.ref == base_branch:
+            raise ValueError(f"A pull request already exists for the branch '{head_branch}'")
+    
+    # If no existing PR, create a new one
     pr = repo.create_pull(title=title, body=body, base=base_branch, head=head_branch)
     print(f"Pull Request created: {pr.html_url}")
+
 
 def main():
     url = os.getenv('FILE_URL')
