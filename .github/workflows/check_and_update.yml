@@ -30,4 +30,4 @@ jobs:
         TARGET_DIR: 'test_dir'  # Replace with the directory you want to check within the repository
         GITHUB_TOKEN: ${{ secrets.ACTION_TOKEN }}
         REPO_NAME: ${{ github.repository }}
-      run: python check_delta_and_create_pr.py
+      run: python scripts/check_delta_and_create_pr.py
