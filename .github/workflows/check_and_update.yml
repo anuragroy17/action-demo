@@ -1,9 +1,9 @@
 name: Check Delta and Create PR
 
-on:
+#on:
 #  schedule:
 #    - cron: '0 0 * * *'  # Runs daily at midnight
-  workflow_dispatch:
+#  workflow_dispatch:
 
 jobs:
   check_and_update:
