@@ -60,18 +60,22 @@ def main():
         for file in files:
             extracted_file_path = os.path.join(root, file)
             repo_file_path = os.path.join(repo_dir, target_dir, os.path.relpath(extracted_file_path, extracted_dir))
-            if os.path.exists(repo_file_path):
-                if os.path.basename(extracted_file_path) == os.path.basename(repo_file_path):
-                    diff = check_differences(extracted_file_path, repo_file_path)
-                    if diff:
-                        files_with_differences.append((extracted_file_path, repo_file_path))
+            if repo_file_path.startswith(os.path.join(repo_dir, target_dir)):  # Ensure file is within target_dir
+                if os.path.exists(repo_file_path):
+                    if os.path.basename(extracted_file_path) == os.path.basename(repo_file_path):
+                        diff = check_differences(extracted_file_path, repo_file_path)
+                        if diff:
+                            files_with_differences.append((extracted_file_path, repo_file_path))
+                    else:
+                        new_files.append((extracted_file_path, repo_file_path))
                 else:
                     new_files.append((extracted_file_path, repo_file_path))
-            else:
-                new_files.append((extracted_file_path, repo_file_path))
     
     # Step 4: Raise a PR if there are differences or new files
     if files_with_differences or new_files:
+        # Pull changes from remote repository
+        subprocess.run(['git', 'pull', 'origin', base_branch])
+        
         # Create a new branch
         subprocess.run(['git', 'checkout', '-b', head_branch])
         
@@ -81,8 +85,10 @@ def main():
             subprocess.run(['cp', extracted_file_path, repo_file_path])
         
         # Commit the changes
-        subprocess.run(['git', 'add', '.'])
+        subprocess.run(['git', 'add', os.path.join(repo_dir, target_dir)])  # Add only files within target_dir
         subprocess.run(['git', 'commit', '-m', 'Update files with differences and add new files'])
+        
+        # Push changes to remote repository
         subprocess.run(['git', 'push', 'origin', head_branch])
         
         # Create the pull request
